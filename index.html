@@ -16,10 +16,10 @@
     --text: #e9ebf0;
     --text-dim: #9aa1af;
     --text-faint: #5f6675;
-    --axis-x: #ff5d5d;
-    --axis-y: #5dd97a;
-    --axis-z: #5b9dff;
-    --axis-w: #f2b84b;
+    --axis-x: #ff5d5d; /* red */
+    --axis-y: #5dd97a; /* green */
+    --axis-z: #5b9dff; /* blue */
+    --axis-w: #f2b84b; /* amber, 4th slot */
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   html{scroll-behavior:smooth;}
@@ -34,6 +34,8 @@
   a{ color:inherit; }
   .mono{ font-family:'JetBrains Mono', monospace; }
   h1,h2,h3,.display{ font-family:'Space Grotesk', sans-serif; }
+
+  /* subtle viewport grid background */
   .grid-bg{
     position:fixed; inset:0; z-index:0; pointer-events:none;
     background-image:
@@ -43,6 +45,8 @@
     opacity:0.14;
     mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 90%);
   }
+
+  /* left hierarchy rail */
   .rail{
     position:fixed; top:0; left:0; bottom:0; width:64px;
     border-right:1px solid var(--line);
@@ -63,6 +67,7 @@
   .rail-dot:hover{ background:var(--text); }
   .rail-axis{ display:flex; gap:5px; margin-top:auto; }
   .rail-axis span{ width:6px; height:6px; border-radius:1px; }
+
   main{ margin-left:64px; position:relative; z-index:1; }
   section{ padding:120px 8vw; border-bottom:1px solid var(--line); }
   .eyebrow{
@@ -71,6 +76,8 @@
     display:flex; align-items:center; gap:10px;
   }
   .eyebrow::before{ content:''; width:16px; height:1px; background:var(--axis-z); }
+
+  /* HERO */
   .hero{ min-height:92vh; display:flex; flex-direction:column; justify-content:center; padding-top:100px; }
   .hero-coord{
     font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--text-faint);
@@ -95,6 +102,8 @@
   .btn.primary{ background:var(--axis-z); border-color:var(--axis-z); color:#0b0f16; font-weight:600; }
   .btn.primary:hover{ background:#7cb0ff; }
   .btn:not(.primary):hover{ border-color:var(--text-dim); background:var(--panel); }
+
+  /* INSPECTOR / ABOUT */
   .inspector{
     background:var(--panel); border:1px solid var(--line); border-radius:10px;
     overflow:hidden;
@@ -112,9 +121,12 @@
   .field-row:last-child{ border-bottom:none; }
   .field-label{ font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.05em; padding-top:2px;}
   .field-value{ color:var(--text); }
+
   .about-grid{ display:grid; grid-template-columns: 1.1fr 0.9fr; gap:56px; align-items:start; }
   .about-text p{ color:var(--text-dim); font-size:16px; margin-bottom:16px; max-width:52ch; }
   .about-text p:last-child{ margin-bottom:0; }
+
+  /* SKILLS */
   .skill-group{ margin-bottom:32px; }
   .skill-group:last-child{ margin-bottom:0; }
   .skill-group-label{
@@ -128,6 +140,8 @@
     transition:all .2s ease;
   }
   .chip:hover{ border-color:var(--axis-z); color:var(--text); }
+
+  /* PROJECTS */
   .project-grid{ display:grid; grid-template-columns:repeat(2, 1fr); gap:24px; margin-top:48px; }
   .project-card{
     background:var(--panel); border:1px solid var(--line); border-radius:10px;
@@ -169,6 +183,8 @@
   }
   .project-link:hover{ text-decoration:underline; }
   .project-note{ font-size:12.5px; color:var(--text-faint); font-style:italic; margin-top:auto; padding-top:10px; }
+
+  /* EXPERIENCE */
   .timeline{ margin-top:48px; position:relative; }
   .timeline::before{ content:''; position:absolute; left:11px; top:6px; bottom:6px; width:1px; background:var(--line); }
   .tl-item{ display:grid; grid-template-columns:24px 140px 1fr; gap:24px; padding:28px 0; position:relative; }
@@ -178,6 +194,8 @@
   .tl-role{ font-size:17px; font-weight:600; margin-bottom:4px; }
   .tl-company{ font-family:'JetBrains Mono', monospace; font-size:12.5px; color:var(--axis-z); margin-bottom:10px; }
   .tl-desc{ color:var(--text-dim); font-size:14.5px; max-width:64ch; }
+
+  /* CONTACT */
   .contact-wrap{ display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:40px; }
   .contact-links{ display:flex; flex-direction:column; gap:14px; }
   .contact-link{
@@ -187,8 +205,10 @@
   .contact-link:hover{ color:var(--axis-z); }
   .contact-link .k{ color:var(--text-faint); font-size:12px; width:64px; display:inline-block; }
   footer{ padding:32px 8vw; font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--text-faint); display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px;}
+
   [data-reveal]{ opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s ease; }
   [data-reveal].in{ opacity:1; transform:translateY(0); }
+
   @media (max-width: 860px){
     .rail{ display:none; }
     main{ margin-left:0; }
@@ -357,4 +377,143 @@
           </div>
           <div class="project-role mono">Game Developer · NGT (New Games Technology)</div>
           <p class="project-desc">Developed slot and casino-style games (iGaming) using Unity3D and HTML5 — implemented game logic, UI flows, animations and live product features for commercial release under tight delivery deadlines.</p>
-          <div class="project-tags"><sp
+          <div class="project-tags"><span class="tag">Unity3D</span><span class="tag">Phaser3</span><span class="tag">HTML5</span><span class="tag">WebGL</span></div>
+          <div class="project-note">No screenshots available — under studio confidentiality.</div>
+        </div>
+      </div>
+
+      <!-- Mabrook -->
+      <div class="project-card" style="--card-axis:var(--axis-w)" data-reveal>
+        <div class="project-thumb" style="background:#171a21;">
+          <img src="mabrook_mosaic.jpg" alt="Grid of casual game covers built for the Mabrook games hub" style="width:100%; height:100%; object-fit:cover; opacity:0.9;">
+        </div>
+        <div class="project-body">
+          <div class="project-top">
+            <div class="project-title">Mabrook Games Hub</div>
+            <div class="project-status mono">Current</div>
+          </div>
+          <div class="project-role mono">Senior Unity Developer · Mabrook</div>
+          <p class="project-desc">Develop and maintain a high-volume portfolio of casual mobile games in Unity3D and C#, contributing to 200+ published Android/iOS releases — gameplay programming, live updates, and mentoring a team of 2 developers.</p>
+          <div class="project-tags"><span class="tag">Unity</span><span class="tag">C#</span><span class="tag">Casual/Mobile</span></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="experience">
+    <div class="eyebrow">04 — Timeline</div>
+    <h2 style="font-size:32px; font-weight:600;">Experience</h2>
+
+    <div class="timeline" data-reveal>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-year mono">2024–Present</div>
+        <div>
+          <div class="tl-role">Senior Unity Developer</div>
+          <div class="tl-company mono">Mabrook</div>
+          <div class="tl-desc">Develop and maintain a high-volume portfolio of casual mobile games using Unity3D and C#, contributing to 200+ published Android/iOS releases. Implemented gameplay systems and performance optimizations, and mentored a team of 2 developers.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-year mono">2023–2024</div>
+        <div>
+          <div class="tl-role">Unity Developer</div>
+          <div class="tl-company mono">1M Bits Horde</div>
+          <div class="tl-desc">Contributed to Nested Lands, a Unity3D/C# title published on Steam. Built core gameplay features, resolved technical issues, and improved runtime performance in an international, fully remote Agile team.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-year mono">2021–2023</div>
+        <div>
+          <div class="tl-role">Game Developer</div>
+          <div class="tl-company mono">Flex Interativa</div>
+          <div class="tl-desc">Created VR experiences and real-time interactive applications using Unity3D, including work on the Flex Universe platform. Developed branded casual games and custom interactive products for corporate clients.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-year mono">2020–2021</div>
+        <div>
+          <div class="tl-role">Game Developer</div>
+          <div class="tl-company mono">NGT — New Games Technology</div>
+          <div class="tl-desc">Developed slot and casino-style games (iGaming) using Unity3D and HTML5. Implemented game logic, UI flows, animations and live product features under tight commercial deadlines.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-year mono">2014–2020</div>
+        <div>
+          <div class="tl-role">Game Developer</div>
+          <div class="tl-company mono">Yupi Studios · TicJoy · additional studios</div>
+          <div class="tl-desc">Delivered multiple Unity3D, HTML5, and interactive game projects across several studios — including Earth to Luna! Watch and Play and Vila Saudável — building strong expertise in production pipelines and gameplay systems design.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" style="border-bottom:none;">
+    <div class="eyebrow">05 — Contact</div>
+    <div class="contact-wrap">
+      <div data-reveal>
+        <h2 style="font-size:clamp(32px,4vw,48px); font-weight:700; max-width:14ch; margin-bottom:20px;">Let's build something that ships.</h2>
+        <p style="color:var(--text-dim); max-width:44ch; margin-bottom:20px;">Open to senior/lead remote roles in Unity development, gameplay programming and XR.</p>
+        <div class="chip-row">
+          <span class="chip">Senior Unity Developer</span><span class="chip">Lead Unity Developer</span><span class="chip">Gameplay Programmer</span><span class="chip">XR / VR Unity Developer</span>
+        </div>
+        <p class="mono" style="color:var(--text-faint); font-size:12.5px; margin-top:20px;">Immediate availability · Fully remote · Open to international opportunities</p>
+      </div>
+      <div class="contact-links" data-reveal>
+        <a class="contact-link" href="mailto:gugamazzotti@gmail.com"><span class="k">EMAIL</span> gugamazzotti@gmail.com</a>
+        <a class="contact-link" href="tel:+5583998040539"><span class="k">PHONE</span> +55 (83) 99804-0539</a>
+        <a class="contact-link" href="https://www.linkedin.com/in/gustavomazzotti/" target="_blank" rel="noopener"><span class="k">LINKEDIN</span> /in/gustavomazzotti</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <span>© 2026 Gustavo Mazzotti</span>
+  <span>Built with Unity-editor inspired UI</span>
+</footer>
+
+<script>
+  // scroll reveal
+  const revealEls = document.querySelectorAll('[data-reveal]');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el=>io.observe(el));
+
+  // active rail dot on scroll
+  const sections = ['hero','about','skills','projects','experience','contact'].map(id=>document.getElementById(id));
+  const dots = document.querySelectorAll('.rail-dot');
+  const dotIO = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        dots.forEach(d=>d.classList.remove('active'));
+        const match = document.querySelector('.rail-dot[data-target="'+entry.target.id+'"]');
+        if(match) match.classList.add('active');
+      }
+    });
+  }, { threshold: 0.5 });
+  sections.forEach(s=>s && dotIO.observe(s));
+
+  dots.forEach(dot=>{
+    dot.addEventListener('click', ()=>{
+      const target = document.getElementById(dot.dataset.target);
+      if(target) target.scrollIntoView({behavior:'smooth'});
+    });
+  });
+
+  document.getElementById('cv-btn').addEventListener('click', (e)=>{
+    e.preventDefault();
+    alert('Add the link to your downloadable CV here.');
+  });
+</script>
+
+</body>
+</html>
