@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gustavo Mazzotti — Senior Unity Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0f1115;
+    --panel: #171a21;
+    --panel-2: #1d212a;
+    --line: #2a2f3a;
+    --text: #e9ebf0;
+    --text-dim: #9aa1af;
+    --text-faint: #5f6675;
+    --axis-x: #ff5d5d;
+    --axis-y: #5dd97a;
+    --axis-z: #5b9dff;
+    --axis-w: #f2b84b;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+    line-height:1.5;
+    overflow-x:hidden;
+  }
+  ::selection{ background: var(--axis-z); color:#0f1115; }
+  a{ color:inherit; }
+  .mono{ font-family:'JetBrains Mono', monospace; }
+  h1,h2,h3,.display{ font-family:'Space Grotesk', sans-serif; }
+  .grid-bg{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 48px 48px;
+    opacity:0.14;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 90%);
+  }
+  .rail{
+    position:fixed; top:0; left:0; bottom:0; width:64px;
+    border-right:1px solid var(--line);
+    display:flex; flex-direction:column; align-items:center;
+    padding:20px 0; z-index:50; background:rgba(15,17,21,0.9); backdrop-filter: blur(6px);
+  }
+  .rail-logo{
+    width:32px; height:32px; border:1px solid var(--line); border-radius:6px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:12px; font-weight:600; color:var(--text-dim); margin-bottom:32px;
+  }
+  .rail-dots{ display:flex; flex-direction:column; gap:22px; flex:1; align-items:center; }
+  .rail-dot{
+    width:6px; height:6px; border-radius:50%; background:var(--text-faint);
+    transition: all .25s ease; cursor:pointer; position:relative;
+  }
+  .rail-dot.active{ background:var(--axis-z); box-shadow:0 0 0 3px rgba(91,157,255,0.18); }
+  .rail-dot:hover{ background:var(--text); }
+  .rail-axis{ display:flex; gap:5px; margin-top:auto; }
+  .rail-axis span{ width:6px; height:6px; border-radius:1px; }
+  main{ margin-left:64px; position:relative; z-index:1; }
+  section{ padding:120px 8vw; border-bottom:1px solid var(--line); }
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace; font-size:12px; letter-spacing:0.12em;
+    color:var(--axis-z); text-transform:uppercase; margin-bottom:16px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{ content:''; width:16px; height:1px; background:var(--axis-z); }
+  .hero{ min-height:92vh; display:flex; flex-direction:column; justify-content:center; padding-top:100px; }
+  .hero-coord{
+    font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--text-faint);
+    margin-bottom:28px; display:flex; gap:24px; flex-wrap:wrap;
+  }
+  .hero-coord b{ color:var(--text-dim); font-weight:500; }
+  .hero h1{
+    font-size: clamp(40px, 6.4vw, 92px); font-weight:700; line-height:1.02; letter-spacing:-0.02em;
+    max-width:16ch;
+  }
+  .hero h1 .accent{ color:var(--axis-z); }
+  .hero-sub{
+    margin-top:28px; font-size:19px; color:var(--text-dim); max-width:56ch;
+  }
+  .hero-cta{ margin-top:44px; display:flex; gap:16px; flex-wrap:wrap; }
+  .btn{
+    font-family:'JetBrains Mono', monospace; font-size:13px; letter-spacing:0.02em;
+    padding:14px 24px; border-radius:4px; border:1px solid var(--line);
+    display:inline-flex; align-items:center; gap:10px; transition:all .2s ease;
+    text-decoration:none; cursor:pointer; background:transparent; color:var(--text);
+  }
+  .btn.primary{ background:var(--axis-z); border-color:var(--axis-z); color:#0b0f16; font-weight:600; }
+  .btn.primary:hover{ background:#7cb0ff; }
+  .btn:not(.primary):hover{ border-color:var(--text-dim); background:var(--panel); }
+  .inspector{
+    background:var(--panel); border:1px solid var(--line); border-radius:10px;
+    overflow:hidden;
+  }
+  .inspector-head{
+    padding:14px 20px; border-bottom:1px solid var(--line);
+    font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--text-faint);
+    display:flex; justify-content:space-between; letter-spacing:0.04em;
+  }
+  .inspector-body{ padding:28px; }
+  .field-row{
+    display:grid; grid-template-columns:140px 1fr; gap:16px; padding:12px 0;
+    border-bottom:1px solid var(--line); font-size:14px;
+  }
+  .field-row:last-child{ border-bottom:none; }
+  .field-label{ font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.05em; padding-top:2px;}
+  .field-value{ color:var(--text); }
+  .about-grid{ display:grid; grid-template-columns: 1.1fr 0.9fr; gap:56px; align-items:start; }
+  .about-text p{ color:var(--text-dim); font-size:16px; margin-bottom:16px; max-width:52ch; }
+  .about-text p:last-child{ margin-bottom:0; }
+  .skill-group{ margin-bottom:32px; }
+  .skill-group:last-child{ margin-bottom:0; }
+  .skill-group-label{
+    font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--text-faint);
+    text-transform:uppercase; letter-spacing:0.06em; margin-bottom:14px;
+  }
+  .chip-row{ display:flex; flex-wrap:wrap; gap:10px; }
+  .chip{
+    font-family:'JetBrains Mono', monospace; font-size:13px; padding:8px 14px;
+    border:1px solid var(--line); border-radius:20px; color:var(--text-dim);
+    transition:all .2s ease;
+  }
+  .chip:hover{ border-color:var(--axis-z); color:var(--text); }
+  .project-grid{ display:grid; grid-template-columns:repeat(2, 1fr); gap:24px; margin-top:48px; }
+  .project-card{
+    background:var(--panel); border:1px solid var(--line); border-radius:10px;
+    overflow:hidden; display:flex; flex-direction:column; transition:transform .25s ease, border-color .25s ease;
+  }
+  .project-card:hover{ transform:translateY(-4px); border-color:var(--card-axis, var(--axis-z)); }
+  .project-thumb{
+    height:170px; position:relative; overflow:hidden;
+    background:
+      radial-gradient(circle at 20% 20%, color-mix(in srgb, var(--card-axis) 22%, transparent), transparent 55%),
+      linear-gradient(135deg, var(--panel-2), var(--panel));
+    display:flex; align-items:center; justify-content:center;
+    border-bottom:1px solid var(--line);
+  }
+  .project-thumb::before{
+    content:''; position:absolute; inset:0;
+    background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:24px 24px; opacity:0.5;
+  }
+  .project-thumb-mark{
+    font-family:'JetBrains Mono', monospace; font-size:13px; color:var(--card-axis);
+    border:1px solid var(--card-axis); padding:6px 12px; border-radius:20px;
+    z-index:1; background:rgba(15,17,21,0.7); letter-spacing:0.04em;
+  }
+  .project-body{ padding:24px; flex:1; display:flex; flex-direction:column; }
+  .project-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:10px;}
+  .project-title{ font-size:20px; font-weight:600; }
+  .project-status{
+    font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--card-axis);
+    border:1px solid var(--card-axis); padding:3px 8px; border-radius:4px; white-space:nowrap;
+  }
+  .project-role{ font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--text-faint); margin-bottom:14px; }
+  .project-desc{ color:var(--text-dim); font-size:14.5px; margin-bottom:18px; flex:1; }
+  .project-tags{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px; }
+  .tag{ font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--text-faint); border:1px solid var(--line); padding:4px 8px; border-radius:4px; }
+  .project-link{
+    font-family:'JetBrains Mono', monospace; font-size:13px; color:var(--card-axis);
+    display:inline-flex; align-items:center; gap:6px; text-decoration:none; width:fit-content;
+  }
+  .project-link:hover{ text-decoration:underline; }
+  .project-note{ font-size:12.5px; color:var(--text-faint); font-style:italic; margin-top:auto; padding-top:10px; }
+  .timeline{ margin-top:48px; position:relative; }
+  .timeline::before{ content:''; position:absolute; left:11px; top:6px; bottom:6px; width:1px; background:var(--line); }
+  .tl-item{ display:grid; grid-template-columns:24px 140px 1fr; gap:24px; padding:28px 0; position:relative; }
+  .tl-item:first-child{ padding-top:0; }
+  .tl-dot{ width:9px; height:9px; border-radius:50%; background:var(--bg); border:2px solid var(--axis-z); margin-top:6px; z-index:1; }
+  .tl-year{ font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--text-faint); padding-top:4px; }
+  .tl-role{ font-size:17px; font-weight:600; margin-bottom:4px; }
+  .tl-company{ font-family:'JetBrains Mono', monospace; font-size:12.5px; color:var(--axis-z); margin-bottom:10px; }
+  .tl-desc{ color:var(--text-dim); font-size:14.5px; max-width:64ch; }
+  .contact-wrap{ display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:40px; }
+  .contact-links{ display:flex; flex-direction:column; gap:14px; }
+  .contact-link{
+    font-family:'JetBrains Mono', monospace; font-size:15px; text-decoration:none;
+    color:var(--text-dim); display:flex; align-items:center; gap:10px;
+  }
+  .contact-link:hover{ color:var(--axis-z); }
+  .contact-link .k{ color:var(--text-faint); font-size:12px; width:64px; display:inline-block; }
+  footer{ padding:32px 8vw; font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--text-faint); display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px;}
+  [data-reveal]{ opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s ease; }
+  [data-reveal].in{ opacity:1; transform:translateY(0); }
+  @media (max-width: 860px){
+    .rail{ display:none; }
+    main{ margin-left:0; }
+    section{ padding:80px 6vw; }
+    .about-grid{ grid-template-columns:1fr; gap:36px; }
+    .project-grid{ grid-template-columns:1fr; }
+    .field-row{ grid-template-columns:110px 1fr; }
+    .contact-wrap{ align-items:flex-start; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    [data-reveal]{ opacity:1; transform:none; transition:none; }
+    .project-card{ transition:none; }
+  }
+  :focus-visible{ outline:2px solid var(--axis-z); outline-offset:3px; }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<nav class="rail">
+  <div class="rail-logo mono">GM</div>
+  <div class="rail-dots">
+    <div class="rail-dot active" data-target="hero"></div>
+    <div class="rail-dot" data-target="about"></div>
+    <div class="rail-dot" data-target="skills"></div>
+    <div class="rail-dot" data-target="projects"></div>
+    <div class="rail-dot" data-target="experience"></div>
+    <div class="rail-dot" data-target="contact"></div>
+  </div>
+  <div class="rail-axis">
+    <span style="background:var(--axis-x)"></span>
+    <span style="background:var(--axis-y)"></span>
+    <span style="background:var(--axis-z)"></span>
+  </div>
+</nav>
+
+<main>
+
+  <section class="hero" id="hero">
+    <div class="hero-coord mono">
+      <span><b>ROLE</b> Senior Unity Developer</span>
+      <span><b>LOC</b> Recife, BR</span>
+      <span><b>MODE</b> Remote</span>
+      <span><b>EXP</b> 12+ yrs</span>
+      <span><b>TITLES</b> 200+ shipped</span>
+    </div>
+    <h1 data-reveal>Gustavo Mazzotti is a <span class="accent">Senior Unity Developer</span> building gameplay that ships, across mobile, casino and XR.</h1>
+    <p class="hero-sub" data-reveal>Senior Unity Developer &amp; Gameplay Programmer with 12+ years and 200+ published Android/iOS titles — from real-money slot games to VR/XR experiences and a Steam-published release.</p>
+    <div class="hero-cta" data-reveal>
+      <a href="#projects" class="btn primary">View projects →</a>
+      <a href="#contact" class="btn">Get in touch</a>
+      <a href="#" class="btn" id="cv-btn">Download CV ↓</a>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="eyebrow">01 — Inspector</div>
+    <div class="about-grid">
+      <div class="about-text" data-reveal>
+        <h2 style="font-size:32px; margin-bottom:20px; font-weight:600;">About</h2>
+        <p>Gustavo has spent 12+ years inside Unity's editor, contributing to 200+ published Android/iOS titles and Steam projects — from gameplay programming and multiplayer systems to live-ops support and performance optimization.</p>
+        <p>He works across mobile games, casino/slot (iGaming), and VR/XR products, with hands-on experience mentoring developers and collaborating in fully remote, international teams.</p>
+        <p>Currently open to senior/lead remote roles — Unity Developer, Gameplay Programmer, or XR/VR Developer positions with international teams. Available immediately.</p>
+      </div>
+      <div class="inspector" data-reveal>
+        <div class="inspector-head"><span>gustavo_mazzotti.profile</span><span>● available now</span></div>
+        <div class="inspector-body">
+          <div class="field-row"><div class="field-label">Focus</div><div class="field-value">Unity Development, Gameplay Programming, Systems</div></div>
+          <div class="field-row"><div class="field-label">Domains</div><div class="field-value">Mobile · Casino/Slot (iGaming) · VR/XR</div></div>
+          <div class="field-row"><div class="field-label">Track record</div><div class="field-value">200+ published Android/iOS &amp; Steam titles</div></div>
+          <div class="field-row"><div class="field-label">Education</div><div class="field-value">B.Sc. Computer Science — UNIPE</div></div>
+          <div class="field-row"><div class="field-label"></div><div class="field-value">Postgrad, Digital Games — Estácio/IDEZ</div></div>
+          <div class="field-row"><div class="field-label">Based in</div><div class="field-value">Recife, PE — Brazil</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="skills">
+    <div class="eyebrow">02 — Toolset</div>
+    <h2 style="font-size:32px; margin-bottom:44px; font-weight:600;">Skills &amp; stack</h2>
+    <div data-reveal>
+      <div class="skill-group">
+        <div class="skill-group-label">Game engines &amp; languages</div>
+        <div class="chip-row">
+          <span class="chip">Unity3D</span><span class="chip">C#</span><span class="chip">PlayCanvas</span><span class="chip">Phaser</span><span class="chip">HTML5</span><span class="chip">JavaScript</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-label">Game development</div>
+        <div class="chip-row">
+          <span class="chip">Gameplay Programming</span><span class="chip">Game Mechanics &amp; Systems Design</span><span class="chip">Multiplayer Development</span><span class="chip">UI/UX Systems</span><span class="chip">Animation Systems</span><span class="chip">VR &amp; XR Development</span><span class="chip">Mobile Games</span><span class="chip">Casino/Slot Games (iGaming)</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-label">Platforms</div>
+        <div class="chip-row">
+          <span class="chip">Android</span><span class="chip">iOS</span><span class="chip">Steam (PC)</span><span class="chip">WebGL</span><span class="chip">Cross-Platform</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-label">Tools &amp; practices</div>
+        <div class="chip-row">
+          <span class="chip">Git / Version Control</span><span class="chip">Agile/Scrum</span><span class="chip">Performance Optimization &amp; Profiling</span><span class="chip">Debugging</span><span class="chip">Live Ops &amp; Post-Launch Support</span><span class="chip">QA Collaboration</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-label">Leadership &amp; collaboration</div>
+        <div class="chip-row">
+          <span class="chip">Team Leadership</span><span class="chip">Mentoring</span><span class="chip">Remote Collaboration</span><span class="chip">Cross-Functional Teamwork</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects">
+    <div class="eyebrow">03 — Projects</div>
+    <h2 style="font-size:32px; font-weight:600;">Selected work</h2>
+
+    <div class="project-grid">
+
+      <!-- Nested Lands -->
+      <div class="project-card" style="--card-axis:var(--axis-z)" data-reveal>
+        <div class="project-thumb" style="background:#171a21;">
+          <img src="nested_lands.jpg" alt="Nested Lands official trailer key art" style="width:100%; height:100%; object-fit:cover; opacity:0.9;">
+        </div>
+        <div class="project-body">
+          <div class="project-top">
+            <div class="project-title">Nested Lands</div>
+            <div class="project-status mono">Flagship</div>
+          </div>
+          <div class="project-role mono">Unity Developer · 1M Bits Horde</div>
+          <p class="project-desc">Contributed to Nested Lands, a Unity3D/C# title published on Steam — built core gameplay features, resolved technical issues, and improved runtime performance in a fully remote, international team.</p>
+          <div class="project-tags"><span class="tag">Unity</span><span class="tag">C#</span><span class="tag">PC</span></div>
+          <a class="project-link" href="https://store.steampowered.com/app/2553040/Nested_Lands/" target="_blank" rel="noopener">View on Steam →</a>
+        </div>
+      </div>
+
+      <!-- FlexUniverse -->
+      <div class="project-card" style="--card-axis:var(--axis-y)" data-reveal>
+        <div class="project-thumb" style="background:#171a21;">
+          <img src="https://classic.exame.com/wp-content/uploads/2022/02/metaverso-flexinterativa.jpg" alt="Flex Universe metaverse platform, press image by Flex Interativa" style="width:100%; height:100%; object-fit:cover; opacity:0.9;">
+        </div>
+        <div class="project-body">
+          <div class="project-top">
+            <div class="project-title">Flex Universe</div>
+            <div class="project-status mono">Platform</div>
+          </div>
+          <div class="project-role mono">Game Developer · Flex Interativa</div>
+          <p class="project-desc">Created VR experiences and real-time interactive applications in Unity3D for Flex Universe, plus branded casual games and custom interactive products for corporate clients — with a strong focus on usability, performance and cross-platform compatibility.</p>
+          <div class="project-tags"><span class="tag">Unity3D</span><span class="tag">PlayCanvas</span><span class="tag">Multiplayer</span></div>
+          <a class="project-link" href="https://flexinterativa.com.br/metaverso/" target="_blank" rel="noopener">About Flex Universe →</a>
+          <div class="project-note">Press image via Exame (Flex Interativa/Reprodução).</div>
+        </div>
+      </div>
+
+      <!-- NGT -->
+      <div class="project-card" style="--card-axis:var(--axis-x)" data-reveal>
+        <div class="project-thumb"><span class="project-thumb-mark mono">CASINO / WEBGL</span></div>
+        <div class="project-body">
+          <div class="project-top">
+            <div class="project-title">Casino Slot Titles</div>
+            <div class="project-status mono">Confidential</div>
+          </div>
+          <div class="project-role mono">Game Developer · NGT (New Games Technology)</div>
+          <p class="project-desc">Developed slot and casino-style games (iGaming) using Unity3D and HTML5 — implemented game logic, UI flows, animations and live product features for commercial release under tight delivery deadlines.</p>
+          <div class="project-tags"><sp
